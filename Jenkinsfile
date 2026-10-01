@@ -5,15 +5,15 @@ pipeline {
 
         stage('Check Node') {
             steps {
-                bat 'node --version'
-                bat 'npm --version'
+                sh 'node --version'
+                sh 'npm --version'
             }
         }
 
         stage('Install Backend Dependencies') {
             steps {
                 dir('backend') {
-                    bat 'npm ci'
+                    sh 'npm ci'
                 }
             }
         }
@@ -21,7 +21,7 @@ pipeline {
         stage('Test Backend') {
             steps {
                 dir('backend') {
-                    bat 'echo No backend tests configured yet'
+                    sh 'echo No backend tests configured yet'
                 }
             }
         }
@@ -29,7 +29,7 @@ pipeline {
         stage('Install Frontend Dependencies') {
             steps {
                 dir('frontend') {
-                    bat 'npm ci'
+                    sh 'npm ci'
                 }
             }
         }
@@ -37,7 +37,7 @@ pipeline {
         stage('Test Frontend') {
             steps {
                 dir('frontend') {
-                    bat 'npm run test --if-present'
+                    sh 'npm run test --if-present'
                 }
             }
         }
@@ -45,7 +45,7 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 dir('frontend') {
-                    bat 'npm run build'
+                    sh 'npm run build'
                 }
             }
         }
