@@ -69,68 +69,81 @@
 pipeline {
     agent any
 
+    environment {
+        NODE_HOME = 'C:\\Program Files\\nodejs'
+        PATH = "${NODE_HOME};${env.PATH}"
+    }
+
     stages {
 
         stage('Check Node') {
             steps {
-                bat 'node --version'
-                bat 'npm --version'
+                bat '''
+                    echo Checking Node.js...
+                    where node
+                    node --version
+                    npm --version
+                '''
             }
         }
 
         stage('Install Backend Dependencies') {
             steps {
-                dir('backend') {
-                    bat 'npm ci'
-                }
+                bat '''
+                    cd backend
+                    npm install
+                '''
             }
         }
 
         stage('Test Backend') {
             steps {
-                dir('backend') {
-                    bat 'echo No backend tests configured yet'
-                }
+                bat '''
+                    cd backend
+                    npm test
+                '''
             }
         }
 
         stage('Install Frontend Dependencies') {
             steps {
-                dir('frontend') {
-                    bat 'npm ci'
-                }
+                bat '''
+                    cd frontend
+                    npm install
+                '''
             }
         }
 
         stage('Test Frontend') {
             steps {
-                dir('frontend') {
-                    bat 'npm run test --if-present'
-                }
+                bat '''
+                    cd frontend
+                    npm test
+                '''
             }
         }
 
         stage('Build Frontend') {
             steps {
-                dir('frontend') {
-                    bat 'npm run build'
-                }
+                bat '''
+                    cd frontend
+                    npm run build
+                '''
             }
         }
     }
 
     post {
+        always {
+            archiveArtifacts artifacts: '**/build/**, **/dist/**', allowEmptyArchive: true
+        }
+
         success {
-            echo 'Build and tests completed successfully!'
+            echo 'Build completed successfully!'
         }
 
         failure {
             echo 'Build or tests failed.'
-        }
-
-        always {
-            archiveArtifacts artifacts: 'frontend/dist/**',
-                             allowEmptyArchive: true
         }
     }
 }
